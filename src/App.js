@@ -1,32 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Forms from "./components/Forms";
 
+
 function App() {
+
   //localStorage.clear();
 
-    // Recuperar datos de reservas almacenados en el localStorage al inicio
+   
     const initialReservations = JSON.parse(localStorage.getItem("reservationData")) || [];
     const [reservations, setReservations] = useState(initialReservations);
-  
-    function areObjectsEqual(objA, objB) {
-      const stringA = JSON.stringify(objA);
-      const stringB = JSON.stringify(objB);
-      return stringA === stringB;
-    }
-    
-    // ...
+
     
     function handleSubmitSuccess(date, timeSlot, name, surname) {
-      const storedData = localStorage.getItem("reservationData");
+      
+      
+      let storedData = localStorage.getItem("reservationData");
+      let parsedData = [];
+    
       if (storedData) {
-        const parsedData = JSON.parse(storedData);
+        parsedData = JSON.parse(storedData);
         console.log("Stored Data:", parsedData);
         console.log("Form Data:", { date, timeSlot, name, surname });
     
-        // Verificar si la nueva reserva coincide con alguna reserva existente
-        const isDuplicate = parsedData.some((reservation) =>
-          areObjectsEqual(reservation, { date, timeSlot, name, surname })
-        );
+        // It's crucial o format Date because otherwise what is sent through the form and what is restored through localStorage has a different formatting
+        //making the isDuplicate method return false.
+        //This seems to happen with this Chakra Datepicker as I had no such trouble with the Bootstrap one from the previous exercise.
+        const formattedDate = date.toLocaleDateString();
+    
+        const isDuplicate = parsedData.some(function (reservation) {
+          return (
+            reservation.date === formattedDate &&
+            reservation.timeSlot === timeSlot &&
+            reservation.name === name &&
+            reservation.surname === surname
+          );
+        });
     
         if (isDuplicate) {
           alert("Reservation already made with that name and time");
@@ -34,20 +42,18 @@ function App() {
         }
       }
     
+      const formattedDate = date.toLocaleDateString();
       const newReservation = {
-        date,
+        date: formattedDate,
         timeSlot,
         name,
         surname,
       };
     
-      // Agregar la nueva reserva al array de reservas existente
       const updatedReservations = [...parsedData, newReservation];
     
-      // Guardar el array actualizado en el localStorage
       localStorage.setItem("reservationData", JSON.stringify(updatedReservations));
     
-      // Actualizar el estado con el nuevo array de reservas
       setReservations(updatedReservations);
     }
 

@@ -18,8 +18,8 @@ export default function Forms(props) {
     const [dateError, setDateError] = useState("");
     const [nameError, setNameError] = useState("");
     const [surnameError, setSurnameError] = useState("");
-    const [timeSlot, setTimeSlot] = useState(""); // Estado para el campo de selección de hora
-    const [timeSlotError, setTimeSlotError] = useState(""); // Estado para el mensaje de error del campo de selección de hora
+    const [timeSlot, setTimeSlot] = useState(""); 
+    const [timeSlotError, setTimeSlotError] = useState(""); 
 
     const handleSubmit = (event) => {
         event.preventDefault();
